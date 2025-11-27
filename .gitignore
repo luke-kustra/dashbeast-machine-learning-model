@@ -1,0 +1,14 @@
+.venv/
+src/.venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.vscode/
+*.egg-info/
+dist/
+build/
+.DS_Store
+workout_model.pth
+workout_checkpoint.pth
+scaler.json
