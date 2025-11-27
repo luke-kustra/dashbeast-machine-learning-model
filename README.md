@@ -1,6 +1,6 @@
 # Dashbeast
 
-This repository contains a small PyTorch classifier (`WorkoutClassifier`) to predict workout types from 6 sensor features (accelerometer + gyroscope).
+This repository contains a small PyTorch classifier (`WorkoutClassifier`) to predict workout types from 6 sensor features (accelerometer + gyroscope). Using Python 3.11.9
 
 Quick start
 
