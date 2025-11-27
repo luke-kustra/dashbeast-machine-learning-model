@@ -4,29 +4,48 @@ This repository contains a small PyTorch classifier (`WorkoutClassifier`) to pre
 
 Quick start
 
-1) Create and activate the virtual environment (Windows PowerShell):
+**Prerequisites**
+- Python 3.8–3.11 (64-bit) installed on your system. Download from [python.org](https://www.python.org/downloads/windows/) or install via `winget install Python.Python.3.11`.
+
+**Setup (one-time)**
+
+1) Clone the repository and navigate to the project root:
+
+```powershell
+git clone https://github.com/YOUR_USERNAME/dashbeast-machine-learning-model.git
+cd dashbeast-machine-learning-model
+```
+
+2) Create and activate a virtual environment (Windows PowerShell):
 
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 ```
 
-2) Install dependencies:
+3) Upgrade pip and install dependencies:
 
 ```powershell
+python -m pip install --upgrade pip setuptools wheel
 python -m pip install -r src\requirements.txt
 ```
 
-3) Train the model (saves `workout_model.pth`, `scaler.json`, and `label_map.json`):
+**Run the project**
+
+4) Train the model (generates `workout_model.pth`, `scaler.json`, and `label_map.json`):
 
 ```powershell
-python src\train.py
+python -m src.train
 ```
 
-4) Predict from six features (CLI):
+5) Predict from six features (CLI):
 
 ```powershell
-python src\predict.py --features 0.1 0.2 0.3 0.4 0.5 0.6 --topk 3
+# With custom features
+python -m src.predict --features 0.1 0.2 0.3 0.4 0.5 0.6 --topk 3
+
+# Or use the default sample
+python -m src.predict
 ```
 
 Run tests
