@@ -4,11 +4,11 @@ import torch
 import torch.nn.functional as F
 try:
     # When run as a package (python -m src.predict)
-    from .model import WorkoutClassifier
+    from .neural_net import WorkoutClassifier
     from .data_loader import load_scaler
 except Exception:
     # Fallback for running as a script (python src/predict.py)
-    from model import WorkoutClassifier
+    from neural_net import WorkoutClassifier
     from data_loader import load_scaler
 
 

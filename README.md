@@ -1,6 +1,6 @@
 # Dashbeast
 
-This repository contains a small PyTorch classifier (`WorkoutClassifier`) to predict workout types from 6 sensor features (accelerometer + gyroscope). Using Python 3.11.9
+This repository contains a small PyTorch classifier (`WorkoutClassifier`) to predict workout types from 6 sensor features (accelerometer + gyroscope), plus scikit-learn baselines: logistic regression and gradient boosting. Using Python 3.11.9
 
 ## Overview
 
@@ -11,14 +11,19 @@ This repository contains a small PyTorch classifier (`WorkoutClassifier`) to pre
 - Saves the trained model, scaler parameters, and label mappings for reproducible inference.
 
 **Key features**
-- **Training pipeline:** supports external label maps, train/validation split, automatic checkpointing of the best model.
+- **PyTorch neural network:** 3-layer feedforward classifier with feature normalization and train/validation split.
+- **Logistic regression baseline:** simple, interpretable linear model with scikit-learn.
+- **Gradient boosting baseline:** ensemble method with excellent performance characteristics.
+- **Training pipelines:** each model supports external label maps, train/validation split, and automatic metric computation.
 - **Inference CLI:** accepts 6 sensor features, returns top-K workout predictions with probabilities.
-- **Reproducibility:** saves the scaler and label map with the checkpoint so inference uses the exact same preprocessing as training.
-- **Tests:** includes unit tests for the dataloader, scaler serialization, and end-to-end predict CLI.
+- **Reproducibility:** saves the scaler and label map with each checkpoint so inference uses identical preprocessing as training.
+- **Tests:** unit tests for the dataloader, PyTorch predict CLI, logistic regression, and gradient boosting.
 
 **Tech stack**
 - PyTorch (neural network model and training)
+- scikit-learn (logistic regression and gradient boosting)
 - pandas (data loading)
+- joblib (model serialization for scikit-learn)
 - pytest (testing)
 - Python 3.8–3.11
 
@@ -82,6 +87,67 @@ Or with the default sample:
 python -m src.predict
 ```
 
+## Running Each ML Model
+
+### PyTorch Neural Network
+
+**Train:**
+```powershell
+python -m src.train
+```
+
+**Predict:**
+```powershell
+python -m src.predict --features 0.1 0.2 0.3 0.4 0.5 0.6 --topk 3
+```
+
+### Logistic Regression
+
+**Train:**
+```powershell
+python -m src.logreg train
+```
+
+Saves model to `logreg_model.joblib` and label map to `logreg_label_map.json`.
+
+**Predict:**
+```powershell
+python -m src.logreg predict --features 0.1 0.2 0.3 0.4 0.5 0.6 --topk 3
+```
+
+### Gradient Boosting
+
+**Train:**
+```powershell
+python -m src.gboost train
+```
+
+Saves model to `gradient_boosting_model.joblib` and label map to `gboost_label_map.json`.
+
+**Predict:**
+```powershell
+python -m src.gboost predict --features 0.1 0.2 0.3 0.4 0.5 0.6 --topk 3
+```
+
+## Model Files Structure
+
+After training all three models, your project will have:
+
+```
+dashbeast/
+├── workout_model.pth              # PyTorch model weights
+├── workout_checkpoint.pth         # PyTorch best checkpoint
+├── scaler.json                    # PyTorch scaler (mean/std)
+├── logreg_model.joblib            # Logistic regression model
+├── logreg_label_map.json          # Logistic regression label map
+├── gradient_boosting_model.joblib # Gradient boosting model
+├── gboost_label_map.json          # Gradient boosting label map
+└── data/
+    └── workouts.csv               # Training data
+```
+
+Each model is independent with its own label map, allowing them to be trained and used separately.
+
 **4) Run tests (1 minute)**
 
 ```powershell
@@ -91,7 +157,7 @@ python -m pytest -q
 
 Expected output:
 ```
-3 passed in 4.7s
+5 passed in 13.9s
 ```
 
 ## Architecture

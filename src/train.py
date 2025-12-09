@@ -7,11 +7,11 @@ import torch.optim as optim
 try:
     # package-relative imports when run as module
     from .data_loader import get_dataloaders, save_scaler
-    from .model import WorkoutClassifier
+    from .neural_net import WorkoutClassifier
 except Exception:
     # fallback when running as script from src directory
     from data_loader import get_dataloaders, save_scaler
-    from model import WorkoutClassifier
+    from neural_net import WorkoutClassifier
 
 # Hyperparameters
 NUM_EPOCHS = 20
