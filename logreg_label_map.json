@@ -1,1 +1,1 @@
-{"Bench Press": 0, "Bicep Curl": 1, "Burpees": 2, "Deadlift": 3, "Lunges": 4, "Plank": 5, "jumping_jack": 6, "pushup": 7, "squat": 8}
+{"bench_press": 0, "bicepcurls": 1, "burpees": 2, "deadlift": 3, "jumping_jack": 4, "lunges": 5, "mountain_climbers": 6, "plank": 7, "pushup": 8, "squat": 9}

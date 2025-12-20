@@ -5,7 +5,7 @@ from src import logreg, gboost
 
 def test_logistic_regression_train_and_predict(tmp_path):
     repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    data_path = os.path.join(repo_root, 'data', 'workouts.csv')
+    data_path = os.path.join(repo_root, 'data', 'workouts_multiclass.csv')
 
     label_map_path = tmp_path / 'label_map.json'
     model_path = tmp_path / 'logreg.joblib'
@@ -32,7 +32,7 @@ def test_logistic_regression_train_and_predict(tmp_path):
 
 def test_gradient_boosting_train_and_predict(tmp_path):
     repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    data_path = os.path.join(repo_root, 'data', 'workouts.csv')
+    data_path = os.path.join(repo_root, 'data', 'workouts_multiclass.csv')
 
     label_map_path = tmp_path / 'label_map.json'
     model_path = tmp_path / 'gboost.joblib'

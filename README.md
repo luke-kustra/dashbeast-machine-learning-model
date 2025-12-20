@@ -246,33 +246,95 @@ python -m src.predict --features 0.1 0.2 0.3 0.4 0.5 0.6 --topk 3
 python -m src.predict
 ```
 
-Run tests
+## Testing
 
-The repository includes a small `pytest` suite that checks the dataloader, scaler serialization, and that the prediction CLI runs.
+### Run All Tests
 
-1) Activate the same virtual environment used for running the project (PowerShell):
+The repository includes a `pytest` suite that tests all three ML models:
 
 ```powershell
-# If your venv is at the repository root
+# Activate venv
 .\.venv\Scripts\Activate.ps1
 
-# If your venv was created inside `src` instead
-# .\src\.venv\Scripts\Activate.ps1
+# Install pytest (if missing)
+python -m pip install pytest
+
+# Run all tests
+python -m pytest -v
 ```
 
-2) Install `pytest` (if missing) and run tests from the repository root:
+Expected output:
+```text
+5 passed in ~15s
+```
+
+### Test Individual Models
+
+**Test only logistic regression:**
+```powershell
+python -m pytest tests/test_sklearn_models.py::test_logistic_regression_train_and_predict -v
+```
+
+For manual testing:
+```powershell
+python -m src.logreg train 
+python -m src.logreg predict --features 0.1 0.2 0.3 0.4 0.5 0.6 --topk 3   
+```
+the 6 numbers in the middle is sample data the user will input by working out.
+
+**Test only gradient boosting:**
+```powershell
+python -m pytest tests/test_sklearn_models.py::test_gradient_boosting_train_and_predict -v
+```
+For manual testing:
+```powershell
+python -m src.gboost train
+python -m src.gboost predict --features 0.23 0.55 1.31 -3.31 0.78 -0.99 --topk 3
+```
+
+**Test only PyTorch neural network:**
+```powershell
+python -m pytest tests/test_predict.py -v
+```
+For Manual Testing
+```powershell
+ python -m src.train
+ python -m src.gboost predict --features 0.23 0.55 1.31 -3.31 0.78 -0.99 --topk 3
+ ```
+ 
+### Benchmark All Models
+
+Compare all three models on speed and accuracy:
 
 ```powershell
-python -m pip install pytest
-Set-Location C:\Users\luke0\dashbeast   # or change to your repo root
-python -m pytest -q
+python benchmark.py
 ```
 
-3) Expected output (example):
-
+Sample output:
 ```text
-3 passed in 4.7s
+======================================================================
+BENCHMARK RESULTS
+======================================================================
+Model                     |   Time (s) |   Accuracy
+----------------------------------------------------------------------
+neural_network            |      2.478 |     1.0000
+logistic_regression       |      0.021 |     1.0000
+gradient_boosting         |      1.075 |     0.9667
+
+======================================================================
+RECOMMENDATION
+======================================================================
+RECOMMENDED MODEL: LOGISTIC_REGRESSION
+  - Accuracy: 1.0000
+  - Training Time: 0.021s
+
+Justification:
+  ✓ Achieves 100% accuracy with exceptional training speed (20ms)
+  ✓ ~100x faster than neural network with same accuracy
+  ✓ Simple, interpretable, and perfect for small structured sensor data
 ```
+
+The benchmark trains all three models on `data/workouts_multiclass.csv` and provides a recommendation based on accuracy and speed.
 
 Troubleshooting
 
