@@ -26,11 +26,34 @@ def _resolve_label_map(raw_labels: List[str], label_map_path: str) -> Dict[str, 
 
 
 def load_dataset(file_path: str = DEFAULT_DATA_PATH, label_map_path: str = None) -> Tuple[np.ndarray, np.ndarray, Dict[str, int]]:
-    """Load and parse workout data from CSV."""
+    """Load and parse workout data from CSV.
+
+    Schema-aware behavior (mirrors src.data_loader):
+    - If columns Ax, Ay, Az, Gx, Gy, Gz exist, they are used as features in that order.
+    - If ExerciseName exists, it is used as the label.
+    - Otherwise, defaults to: last column is label; all other columns are features.
+    """
     df = pd.read_csv(file_path)
-    label_col = df.columns[-1]
+
+    # Determine label column
+    if 'ExerciseName' in df.columns:
+        label_col = 'ExerciseName'
+    else:
+        label_col = df.columns[-1]
+
+    # Determine feature columns
+    preferred_feature_cols = ['Ax', 'Ay', 'Az', 'Gx', 'Gy', 'Gz']
+    if all(col in df.columns for col in preferred_feature_cols):
+        feature_cols = preferred_feature_cols
+    else:
+        feature_cols = [c for c in df.columns if c != label_col]
+
     raw_labels = df[label_col].tolist()
-    label_map = _resolve_label_map(raw_labels, label_map_path) if label_map_path else {label: idx for idx, label in enumerate(sorted(set(raw_labels)))}
-    X = df.iloc[:, :-1].to_numpy(dtype=np.float32)
+    if label_map_path:
+        label_map = _resolve_label_map(raw_labels, label_map_path)
+    else:
+        label_map = {label: idx for idx, label in enumerate(sorted(set(raw_labels)))}
+
+    X = df[feature_cols].to_numpy(dtype=np.float32)
     y = np.array([label_map[label] for label in raw_labels], dtype=np.int64)
     return X, y, label_map

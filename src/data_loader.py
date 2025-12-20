@@ -25,19 +25,36 @@ def get_dataloaders(file_path, batch_size=32, val_split=0.2, seed=42, provided_l
     Loads the workout data from a CSV file and returns train and validation DataLoaders,
     a label map, and a scaler (mean/std) computed from the training set.
 
+    The loader is schema-aware:
+    - If columns Ax, Ay, Az, Gx, Gy, Gz exist, they are used as features (in that order).
+    - If ExerciseName exists, it is used as the label.
+    - Otherwise, falls back to: last column is label, preceding columns are features.
+
     Args:
         file_path (str): The path to the CSV file.
         batch_size (int): The batch size for the DataLoader.
         val_split (float): Fraction of data to hold out for validation (0.0-1.0).
         seed (int): Random seed for deterministic splits.
+        provided_label_map (dict|str|None): Optional fixed label map.
 
     Returns:
         (train_loader, val_loader, label_map, scaler)
     """
     df = pd.read_csv(file_path)
 
-    # Use the last column as the label column name
-    label_col = df.columns[-1]
+    # Determine label column
+    if 'ExerciseName' in df.columns:
+        label_col = 'ExerciseName'
+    else:
+        label_col = df.columns[-1]
+
+    # Determine feature columns
+    preferred_feature_cols = ['Ax', 'Ay', 'Az', 'Gx', 'Gy', 'Gz']
+    if all(col in df.columns for col in preferred_feature_cols):
+        feature_cols = preferred_feature_cols
+    else:
+        # fallback: all columns except label
+        feature_cols = [c for c in df.columns if c != label_col]
 
     # If a provided_label_map is given, use it (enforces consistent mapping). Otherwise build from data.
     if provided_label_map is not None:
@@ -55,8 +72,8 @@ def get_dataloaders(file_path, batch_size=32, val_split=0.2, seed=42, provided_l
         label_map = {label: i for i, label in enumerate(unique_labels)}
 
     # Separate features and labels
-    features = df.iloc[:, :-1].values.astype('float32')
-    labels = df.iloc[:, -1].map(label_map).values.astype('int64')
+    features = df[feature_cols].values.astype('float32')
+    labels = df[label_col].map(label_map).values.astype('int64')
 
     # Convert to PyTorch tensors
     features = torch.tensor(features, dtype=torch.float32)
