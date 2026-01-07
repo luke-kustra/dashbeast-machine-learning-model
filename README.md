@@ -354,8 +354,3 @@ python -m pip install --upgrade pip setuptools wheel
 python -m pip install --index-url https://download.pytorch.org/whl/cpu torch
 python -m pip install -r src\requirements.txt
 ```
-
-Notes
-
-
-If you'd like, I can add examples for exporting the model or a small web demo.
