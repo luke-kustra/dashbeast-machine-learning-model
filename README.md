@@ -35,7 +35,7 @@ To demonstrate the project to your boss, follow these steps (5 minutes):
 
 ```powershell
 # Clone and enter the repo
-git clone https://github.com/YOUR_USERNAME/dashbeast-machine-learning-model.git
+git clone https://github.com/luke-kustra/dashbeast-machine-learning-model.git
 cd dashbeast-machine-learning-model
 
 # Create and activate venv
